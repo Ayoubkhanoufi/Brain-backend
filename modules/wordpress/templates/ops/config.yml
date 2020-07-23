@@ -1,0 +1,18 @@
+---
+project_name: <%- project.name_with_namespace %>
+
+deploy_domain: <%- envSettings.deploy_domain %>
+
+database: <%- envSettings.db_user %>
+password: <%- envSettings.db_password %>
+
+deploy_user: gitlab-<%- project.id %>
+deploy_uid: <%- systemId %>
+
+web_user: "{{deploy_user}}"
+document_root: "/home/{{deploy_user}}/wordpress"
+data_root: "/home/{{deploy_user}}/shared"
+
+web_alias: []
+#  - remote: /uploads
+#    local: "/home/{{deploy_user}}/shared/uploads"

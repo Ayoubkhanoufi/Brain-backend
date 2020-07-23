@@ -1,0 +1,14 @@
+<%- include ../layout/main-header.ejs %>
+
+
+<table>
+    <% for(var a in rows) { const item = rows[a] %>
+        <tr>
+            <td><a href="/careers/offer/<%- item._id %>/<%- item.slug %>.html"><%- item.title %></a></td>
+        </tr>
+    <% } %>
+
+</table>
+
+
+<%- include ../layout/main-footer.ejs %>

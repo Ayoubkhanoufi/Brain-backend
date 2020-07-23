@@ -1,0 +1,47 @@
+---
+- hosts: nodejs
+  remote_user: brain
+
+  tasks:
+    - name: Create data directory
+      file:
+        path: ./data
+        state: directory
+
+    - name: Syncing Application
+      synchronize:
+        src: /stage/pulse-core/
+        dest: ./core
+        delete: yes
+        recursive: yes
+        rsync_opts:
+            - "--exclude=ansible"
+            - "--exclude=.git"
+            - "--exclude=.gitlab-ci.yml"
+            - "--exclude=.gitlab"
+
+    - name: Syncing Environment Configurations
+      copy:
+        src: ../{{stage}}.envrc.sh
+        dest: ./core/.envrc
+        mode: '0640'
+
+    - name: Allow direnv
+      ignore_errors: yes
+      shell: "direnv allow"
+      args:
+        executable: /bin/bash
+        chdir: /home/brain/core
+
+    - name: Delete PM2 instance
+      ignore_errors: yes
+      raw: "pm2 delete core"
+      args:
+        executable: /bin/bash
+        chdir: /home/brain/core
+
+    - name: Respawn PM2 instance
+      shell: "source .envrc && pm2 start -f /home/brain/core/index.js --name core --cwd /home/brain/core/"
+      args:
+        executable: /bin/bash
+        chdir: /home/brain/core

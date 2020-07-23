@@ -1,0 +1,9 @@
+stages:
+  - compile
+  - test
+  - development
+  - production
+
+include:
+<% for(var a in allDirs) { %>  - local: 'projects/<%- allDirs[a] %>/gitlab-ci.yml'
+<% } %>

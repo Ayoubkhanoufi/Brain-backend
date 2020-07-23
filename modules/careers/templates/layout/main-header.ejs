@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%- title %></title>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="/careers/public/main.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.1/showdown.min.js"
+    integrity="sha256-jl1+DOsSs9uABTKppOJ2GF8kXoc3XQzBtFFyS0i9Xoo=" crossorigin="anonymous"></script>
+
+  <% for(var a in meta) { const ptr = meta[a] %><meta property="<%- a %>" content="<%- ptr %>" />
+  <% } %>
+</head>
+
+<body>
+
+  <h1>Pulse.digital Offers</h1>

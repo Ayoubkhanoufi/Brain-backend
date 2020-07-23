@@ -1,0 +1,52 @@
+---
+- hosts: php
+  remote_user: root
+  tasks:
+    - name: Syncing Application
+      synchronize:
+        src: /stage/gitlab-<%- project.id %>/
+        dest: /home/gitlab-<%- project.id %>/wordpress
+        delete: yes
+        recursive: yes
+        rsync_opts:
+            - "--exclude=.brain.json"
+            - "--exclude=.cicd"
+            - "--exclude=.git"
+            - "--exclude=.gitlab-ci.yml"
+            - "--exclude=.gitlab"
+
+    - name: Syncing Environment Configurations
+      copy:
+        src: /stage/gitlab-<%- project.id %>/.cicd/{{stage}}/wp-config.php
+        dest: /home/gitlab-<%- project.id %>/wordpress/wp-config.php
+        mode: '0640'
+
+    - name: Fix root permissions
+      shell: "chown -R gitlab-<%- project.id %>: /home/gitlab-<%- project.id %>/wordpress"
+
+    - name: Remove Upload directory
+      ignore_errors: yes
+      shell: "rm -rf /home/gitlab-<%- project.id %>/wordpress/wp-content/uploads"
+
+#    - name: Remove Plugins directory
+#      ignore_errors: yes
+#      shell: "rm -rf /home/gitlab-<%- project.id %>/wordpress/wp-content/plugins"
+
+    - name: Create Upload symbolic link for shared directory
+      file:
+        src: "/home/gitlab-<%- project.id %>/shared/uploads"
+        dest: "/home/gitlab-<%- project.id %>/wordpress/wp-content/uploads"
+        state: link
+
+#    - name: Create Plugin symbolic link for shared directory
+#      file:
+#        src: "/home/gitlab-<%- project.id %>/shared/plugins"
+#        dest: "/home/gitlab-<%- project.id %>/wordpress/wp-content/plugins"
+#        state: link
+
+    - name: Fixup Shared Wordpress Permissions
+      ignore_errors: yes
+      shell: "chmod -R 755 /home/gitlab-<%- project.id %>/wordpress"
+
+    - name: Reload PHP
+      shell: "/etc/init.d/php7.2-fpm restart"

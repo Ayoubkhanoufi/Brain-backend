@@ -1,0 +1,14 @@
+body {
+    font-family: monospace;
+}
+
+#top-line {
+    padding: 20px;
+}
+
+.badge {
+    font-size: 0.8em;
+    border-radius: 5px;
+    padding: 5px;
+}
+

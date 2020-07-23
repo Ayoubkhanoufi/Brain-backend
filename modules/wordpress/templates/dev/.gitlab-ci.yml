@@ -1,0 +1,35 @@
+stages:
+  - compile
+  - deploy
+
+Compilation:
+  stage: compile
+  tags:
+    - php
+  script:
+    - mkdir -p /stage/gitlab-<%- project.id %>
+    - rsync -a --delete ./ /stage/gitlab-<%- project.id %>
+
+Production:
+  stage: deploy
+  only:
+    - master
+  environment:
+    name: production
+  when: manual
+  tags:
+    - php
+  script:
+    - ansible-playbook -i /etc/ansible/environments/prod .cicd/sync.yml
+
+Development:
+  stage: deploy
+  only:
+    - develop
+  environment:
+    name: development
+  when: manual
+  tags:
+    - php
+  script:
+    - ansible-playbook -i /etc/ansible/environments/dev .cicd/sync.yml

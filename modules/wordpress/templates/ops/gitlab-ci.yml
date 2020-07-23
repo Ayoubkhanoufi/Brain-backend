@@ -1,0 +1,23 @@
+<% for(var a in envs) { const env = envs[a]; %>
+<% if(env.env == "dev") { %>
+<%- project.name_with_namespace %> DEV:
+  stage: development
+  when: manual
+  environment:
+    name: development
+  tags:
+    - deploy
+  script:
+    - ansible-playbook -i /etc/ansible/environments/dev ./projects/gitlab-<%- project.id %>/main.yml
+<% } else if(env.env == "prod") { %>
+<%- project.name_with_namespace %> PROD:
+  stage: production
+  when: manual
+  environment:
+    name: production
+  tags:
+    - deploy
+  script:
+    - ansible-playbook -i /etc/ansible/environments/prod ./projects/gitlab-<%- project.id %>/main.yml
+<% } %>
+<% } %>

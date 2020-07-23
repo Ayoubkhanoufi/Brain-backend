@@ -1,0 +1,23 @@
+stages:
+  - compile
+  - deploy
+  
+Compilation:
+  stage: compile
+  tags:
+    - nodejs
+  script:
+    - mkdir -p /stage/pulse-core
+    - rsync -a --delete ./ /stage/pulse-core --exclude=node_modules/
+    - cd /stage/pulse-core; yarn install
+
+Development:
+  stage: deploy
+  only:
+    - develop
+  environment:
+    name: development
+  tags:
+    - nodejs
+  script:
+    - ansible-playbook -i /etc/ansible/environments/dev ansible/playbook/deploy.yml

@@ -1,0 +1,60 @@
+<%- include ../layout/main-header.ejs %>
+
+<% if(!item) { %>
+    Cette offre n'est malheuresement plus disponible
+<% } else { %>
+
+    <div id="top-line">
+    <% if(item.skills && item.skills.length > 0) { %>
+        <% for(var a in item.skills) { const ptr = item.skills[a] %>
+            <span class="badge" style="background-color: <%- ptr.color %>"><%- ptr.label %></span>
+        <% } %>
+    <% } %>
+
+    <% if(item.technologies && item.technologies.length > 0) { %>
+        <% for(var a in item.technologies) { const ptr = item.technologies[a] %>
+            <span class="badge" style="background-color: <%- ptr.color %>"><%- ptr.label %></span>
+        <% } %>
+    <% } %>
+
+    </div>
+
+    <% if(item.image) { %>
+    <img src="/careers/files/<%- item.image.filename %>" style="max-width: 500px"/><br/>
+    <% } %>
+
+
+
+    <p id="introduction"><%- item.introduction %></p>
+    
+    <h1><%- item.title %></h1>
+    <div class="fb-share-button" 
+        data-href="<%- url %>" 
+        data-layout="button">
+    </div><br/>
+    
+    <p id="description"><%- item.description %></p>
+
+<% } %>
+
+
+
+<script>
+    const converter = new showdown.Converter();
+
+    const nIntroduction = document.getElementById("introduction")
+    const nDescription = document.getElementById("description")
+
+    nIntroduction.innerHTML = converter.makeHtml(nIntroduction.innerHTML);
+    nDescription.innerHTML = converter.makeHtml(nDescription.innerHTML);
+</script>
+
+<script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v3.0";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));</script>
+
+<%- include ../layout/main-footer.ejs %>

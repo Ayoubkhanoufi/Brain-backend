@@ -1,0 +1,61 @@
+---
+- hosts: mysql,php
+  remote_user: root
+  vars:
+    - php_version: 7.2
+    - command_warnings: False
+    
+  tasks:
+    - name: Include Stage-specific variables.
+      include_vars: "./vars/{{ stage }}.yml"
+
+- hosts: php
+  remote_user: root
+  vars:
+    - command_warnings: False
+  tasks:
+    - name: Create directory {{document_root}}
+      file:
+        path: "{{document_root}}"
+        state: directory
+
+- import_playbook: /etc/ansible/playbook/wordpress/main.yml
+
+- hosts: php
+  remote_user: root
+  vars:
+    - command_warnings: False
+  tasks:
+    - name: "{{deploy_user}} Joins www-data"
+      ignore_errors: yes
+      shell: "usermod -a -G {{deploy_user}} www-data"
+
+    - name: Create shared directory
+      file:
+        path: "/share/{{deploy_user}}"
+        state: directory
+        owner: "{{deploy_user}}"
+        group: "{{deploy_user}}"
+        mode: "775"
+
+    - name: Create shared upload directory
+      file:
+        path: "/share/{{deploy_user}}/uploads"
+        state: directory
+        owner: "{{deploy_user}}"
+        group: "{{deploy_user}}"
+        mode: "775"
+
+    - name: Create shared plugins directory
+      file:
+        path: "/share/{{deploy_user}}/plugins"
+        state: directory
+        owner: "{{deploy_user}}"
+        group: "{{deploy_user}}"
+        mode: "775"
+
+    - name: Create a symbolic link for shared directory
+      file:
+        src: "/share/{{deploy_user}}"
+        dest: "{{data_root}}"
+        state: link
