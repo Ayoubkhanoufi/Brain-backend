@@ -15,7 +15,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "axios": "^0.19.2",
-    "bcrypt": "^4.0.0",
+    "bcrypt": "^5.0.0",
     "cors": "^2.8.5",
     "debug": "^4.1.1",
     "ejs": "^2.7.4",
